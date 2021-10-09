@@ -82,7 +82,7 @@ func (h *PostHandler) GetPostUser(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Path[len("/posts/users/"):]
 	fmt.Println(id)
 
-	postCursor, err := h.postCollection.Find(context.TODO(), bson.D{{"userId", User.ID}})
+	postCursor, err := h.postCollection.Find(context.TODO(), bson.D{{"userId", id}})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
