@@ -4,27 +4,20 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
-	//"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	//"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func main() {
+func ConnectDB() *mongo.Client {
 	dotenv := EnvVar("CONNECT_URI")
-	client, err := mongo.NewClient(options.Client().ApplyURI(dotenv))
+	clientOptions := options.Client().ApplyURI(dotenv)
+	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	err = client.Connect(ctx)
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		fmt.Println("connected")
-	}
-
-	defer client.Disconnect(ctx)
+	fmt.Println("connected")
+	client.Database("goAPI").CreateCollection(context.TODO(), "Users")
+	client.Database("goAPI").CreateCollection(context.TODO(), "Posts")
+	return client
 }
